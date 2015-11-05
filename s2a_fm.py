@@ -119,7 +119,6 @@ class s2a_fm:
         pin_capability = self.firmata.get_capability_query_results()
         while not pin_capability:
             if time.time() - start_time > 30:
-                print ''
                 print "Could not determine pin capability - exiting."
                 self.firmata.close()
                 # keep sending out a capability query until there is a response
@@ -140,6 +139,17 @@ class s2a_fm:
                 pin_list.append(entry)
 
         print "Arduino Total Pin Discovery completed in %d seconds" % (int(time.time() - start_time))
+    def guess_path(self):
+        os_name = sys.plattform
+        if os_name == "linux2":
+            return  "scratch2"
+        elif os_name == "win32" or os_name == "cygwin":
+            #try some
+            if os.path.exists("C:\Program Files (x86)\Scratch 2\Scratch 2.exe"):
+                return "C:\Program Files (x86)\Scratch 2\Scratch 2.exe"
+        elif os_name == "darwin":
+            return "scratch2"
+        return -1
 
     def start_server(self):
         try:
